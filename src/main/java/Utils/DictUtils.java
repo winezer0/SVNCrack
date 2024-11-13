@@ -2,10 +2,7 @@ package Utils;
 
 import cn.hutool.core.io.FileUtil;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,19 +13,28 @@ import static Utils.UserPassPair.splitAndCreatUserPassPairs;
 import static cn.hutool.core.io.CharsetDetector.detect;
 
 public class DictUtils {
-
     public static ArrayList<UserPassPair> createCartesianUserPassPairs(List<String> usernames, List<String> passwords) {
-        //创建 笛卡尔积 模式的用户密码对
+        // 创建笛卡尔积模式的用户密码对
+        int batchSize = 100; // 根据实际情况调整批次大小
+        int numUsernames = usernames.size();
+
+        // 使用 ArrayList 直接存储结果
         HashSet<UserPassPair> userPassPairs = new HashSet<>();
 
-        for (String username : usernames) {
-            for (String password : passwords) {
-                userPassPairs.add(new UserPassPair(username.trim(), password.trim()));
+        for (int i = 0; i < numUsernames; i += batchSize) {
+            int end = Math.min(i + batchSize, numUsernames);
+            List<String> batchUsernames = usernames.subList(i, end);
+
+            for (String username : batchUsernames) {
+                for (String password : passwords) {
+                    userPassPairs.add(new UserPassPair(username.trim(), password.trim()));
+                }
             }
         }
+
         print_debug(String.format("Create Cartesian (pairs=max[m*n]) User Pass Pairs [%s]", userPassPairs.size()));
 
-        return new ArrayList<>(userPassPairs);
+        return  new ArrayList<>(userPassPairs);
     }
 
     public static String getFileStrAbsolutePath(String fileStr) {

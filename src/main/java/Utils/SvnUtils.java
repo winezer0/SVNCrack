@@ -15,6 +15,8 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import java.util.Collection;
 
+import static Utils.PrintLog.print_error;
+
 public class SvnUtils {
     public static void initSvnSetup() {
         // 初始化 SVNKit
@@ -25,7 +27,7 @@ public class SvnUtils {
 
     //检查SVN账号密码是否正常
     public static boolean checkAuthentication(String url, String username, String password) {
-        SVNRepository repository = null;
+        SVNRepository repository=null;
         try {
             repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
             ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password.toCharArray());
@@ -34,15 +36,14 @@ public class SvnUtils {
             return true;
         } catch (SVNException e) {
             if (e.getErrorMessage().getErrorCode() == SVNErrorCode.RA_NOT_AUTHORIZED || e.getErrorMessage().getErrorCode() == SVNErrorCode.RA_UNKNOWN_AUTH) {
-                System.err.println(String.format("Authentication failed: %s:%s -> %s", username, password, e.getMessage()));
+                //print_error(String.format("Authentication failed: %s:%s -> %s", username, password, e.getMessage()));
+                //svn: E170001: Authentication required for '<svn://x.x.x.x:x> /data/svn/reon
             } else {
-                System.err.println(String.format("Error checking authentication: %s:%s -> %s", username, password, e.getMessage()));
+                print_error(String.format("Error checking authentication: %s:%s -> %s", username, password, e.getMessage()));
             }
             return false;
-        } finally {
-            if (repository != null) {
-                repository.closeSession();
-            }
+        }finally {
+            if (repository != null) { repository.closeSession(); }
         }
     }
 

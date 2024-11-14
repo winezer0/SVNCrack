@@ -86,15 +86,12 @@ public class SvnCrack implements Runnable{
             initSvnSetup();
 
             // 创建线程池
-            //int numberOfThreads = Runtime.getRuntime().availableProcessors();
-            int numberOfThreads = 5;
+            //int numberOfThreads = 5;
+            int numberOfThreads = Runtime.getRuntime().availableProcessors();
             ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
             // 共享的标志变量
             final AtomicBoolean authenticationSuccessful = new AtomicBoolean(false);
-            final AtomicInteger totalTasks = new AtomicInteger(userPassPairList.size());
-            final AtomicInteger completedTasks = new AtomicInteger(0);
-            final AtomicLong totalTime = new AtomicLong(0);
 
             //进行日志记录
             String title = "SVN_URL,USERNAME,PASSWORD,STATUS";
@@ -133,23 +130,18 @@ public class SvnCrack implements Runnable{
                     String content = String.format("\"%s\",\"%s\",\"%s\",\"%s\"", SVNLoginUrl, svnUser, svnPass, authenticationSuccessful.get());
                     writeLineToFile(logRecodeFilePath, content);
 
-
-                    if (currentIndex % 10 == 0) {
+                    if (currentIndex % 50 == 0) {
                         // 记录任务结束时间
-                        long taskElapsedTime = System.currentTimeMillis() - taskStartTime;
-                        // 更新总时间和已完成任务数
-                        totalTime.addAndGet(taskElapsedTime);
-                        completedTasks.incrementAndGet();
-                        // 计算平均时间和剩余时间
-                        long averageTime = totalTime.get() / completedTasks.get();
-                        long remainingTasks = totalTasks.get() - completedTasks.get();
-                        long estimatedRemainingTime = averageTime * remainingTasks / 1000 / 60;
+                        long taskEndTime = System.currentTimeMillis() - taskStartTime;
+                        long remainingTasks = finalUserPassPairList.size() - currentIndex;
+                        long estimatedRemainingTime = taskEndTime * remainingTasks / 1000 / 60;
                         // 输出剩余时间
-                        System.out.printf("[*] %s/%s Estimated remaining time:%dMIN|%dHOUR%n",
+                        print_info(String.format("[%s/%s] Current Task Running Time:[%s]ms, Estimated Remaining Time:[%s]min -> [%s]hour",
                                 currentIndex + 1,
                                 finalUserPassPairList.size(),
+                                taskEndTime,
                                 estimatedRemainingTime,
-                                estimatedRemainingTime/60
+                                estimatedRemainingTime/60)
                         );
                     }
 

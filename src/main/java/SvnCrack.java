@@ -132,11 +132,11 @@ public class SvnCrack implements Runnable{
 
                     if (currentIndex % 50 == 0) {
                         // 记录任务结束时间
-                        long taskEndTime = System.currentTimeMillis() - taskStartTime;
+                        double taskEndTime = System.currentTimeMillis() - taskStartTime;
                         long remainingTasks = finalUserPassPairList.size() - currentIndex;
-                        long estimatedRemainingTime = taskEndTime * remainingTasks / 1000 / 60;
+                        double estimatedRemainingTime = taskEndTime * remainingTasks * 1.0 / 1000 / 60;
                         // 输出剩余时间
-                        print_info(String.format("[%s/%s] Current Task Running Time:[%s]ms, Estimated Remaining Time:[%s]min -> [%s]hour",
+                        print_info(String.format("[%s/%s] Current Task Running Time:[%s]ms, Estimated Remaining Time:[%.2f]min -> [%.2f]hour",
                                 currentIndex + 1,
                                 finalUserPassPairList.size(),
                                 taskEndTime,

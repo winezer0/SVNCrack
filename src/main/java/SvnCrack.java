@@ -117,14 +117,16 @@ public class SvnCrack implements Runnable{
                     String svnUser = userPassPair.getUsername();
                     String svnPass = userPassPair.getPassword();
 
-                    if (checkAuthentication(SVNLoginUrl, svnUser, svnPass)) {
+                    if (checkAuthentication(SVNLoginUrl, svnUser, svnPass) == SUCCESS) {
                         System.out.printf("[+] %s/%s Authentication success: %s:%s%n", currentIndex + 1, finalUserPassPairList.size(), svnUser, svnPass);
                         authenticationSuccessful.set(true); // 设置成功标志
                         SVNRepositoryShow(SVNLoginUrl, SVNCheckPath, svnUser, svnPass);
                     }
 
                     //记录爆破历史
-                    writeUserPassPairToFile(historyFilePath, pairSeparator, userPassPair);
+                    if (checkAuthentication(SVNLoginUrl, svnUser, svnPass) != ERROR) {
+                        writeUserPassPairToFile(historyFilePath, pairSeparator, userPassPair);
+                    }
 
                     //记录完整的爆破状态
                     String content = String.format("\"%s\",\"%s\",\"%s\",\"%s\"", SVNLoginUrl, svnUser, svnPass, authenticationSuccessful.get());

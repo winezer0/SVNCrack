@@ -19,7 +19,7 @@ import picocli.CommandLine.Option;
 
 @Command(name = "SvnCrack", description = "SVN Cracking Tool", version = "SvnCrack v0.1 20241113", mixinStandardHelpOptions = true)
 public class SvnCrack implements Runnable{
-    @Option(names = { "-t", "--target" }, required = true, description = "SVN login url, like svn://47.56.88.224:1688")
+    @Option(names = { "-t", "--target" }, required = true, description = "SVN login url, like svn://88.88.88.88:1688")
     // 设置 SVN 仓库的 URL
     private static String SVNLoginUrl = null;
 
